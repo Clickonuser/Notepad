@@ -22,7 +22,8 @@ class MainActivity : AppCompatActivity() {
         fab = findViewById(R.id.main_fab)
 
         fab.setOnClickListener {
-            adapter.addItem(ToDoItem("testTitle", "testDescription"))
+            val dialog = CustomDialog(this)
+            dialog.show()
         }
 
         recyclerView = findViewById(R.id.main_recycler_view)
@@ -44,5 +45,9 @@ class MainActivity : AppCompatActivity() {
         adapter = CustomAdapter(data)
         recyclerView.adapter = adapter
 
+    }
+
+    fun insertItem(item: ToDoItem) {
+        adapter.insertItem(item)
     }
 }
