@@ -30,9 +30,6 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         val data = ArrayList<ToDoItem>()
-        for (i in 1..20) {
-            data.add(ToDoItem(i.toString(), i.toString()))
-        }
 
         if(data.isEmpty()) {
             stubContainer.visibility = View.VISIBLE
@@ -49,5 +46,7 @@ class MainActivity : AppCompatActivity() {
 
     fun insertItem(item: ToDoItem) {
         adapter.insertItem(item)
+        stubContainer.visibility = View.INVISIBLE
+        recyclerView.visibility = View.VISIBLE
     }
 }
