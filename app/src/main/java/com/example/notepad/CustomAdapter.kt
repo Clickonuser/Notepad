@@ -1,5 +1,6 @@
 package com.example.notepad
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,12 @@ class CustomAdapter(private var mList: MutableList<ToDoItem>): RecyclerView.Adap
 
     override fun getItemCount(): Int {
             return mList.size
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun addItem(item: ToDoItem) {
+        mList.add(item)
+        notifyDataSetChanged()
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {

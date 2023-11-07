@@ -6,24 +6,32 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var stubContainer: LinearLayout
+    private lateinit var fab: FloatingActionButton
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: CustomAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val stubContainer = findViewById<LinearLayout>(R.id.main_no_items_container)
+        stubContainer = findViewById(R.id.main_no_items_container)
+        fab = findViewById(R.id.main_fab)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.main_recycler_view)
+        fab.setOnClickListener {
+            adapter.addItem(ToDoItem("testTitle", "testDescription"))
+        }
+
+        recyclerView = findViewById(R.id.main_recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         val data = ArrayList<ToDoItem>()
         for (i in 1..20) {
             data.add(ToDoItem(i.toString(), i.toString()))
         }
-
-        val adapter = CustomAdapter(data)
-        recyclerView.adapter = adapter
 
         if(data.isEmpty()) {
             stubContainer.visibility = View.VISIBLE
@@ -32,6 +40,9 @@ class MainActivity : AppCompatActivity() {
             stubContainer.visibility = View.INVISIBLE
             recyclerView.visibility = View.VISIBLE
         }
+
+        adapter = CustomAdapter(data)
+        recyclerView.adapter = adapter
 
     }
 }
