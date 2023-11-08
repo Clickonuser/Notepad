@@ -56,7 +56,7 @@ class CustomDialog(var activity: MainActivity) : Dialog(activity), View.OnClickL
     private fun okButtonClicker() {
         val inputTitleResul = inputFieldTitle.text.toString()
         val inputDescriptionResult = inputFieldDescription.text.toString()
-        activity.insertItem(ToDoItem(inputTitleResul, inputDescriptionResult))
+        activity.insertItem(ToDoItem(0, inputTitleResul, inputDescriptionResult))
         dismiss()
     }
 
