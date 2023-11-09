@@ -50,12 +50,14 @@ class MainActivity : AppCompatActivity() {
             applicationContext,
             AppDatabase::class.java,
             "database-name"
-        ).build()
+        )
+            .allowMainThreadQueries()
+            .build()
 
     }
 
     fun insertItem(item: ToDoItem) {
-        adapter.insertItem(item)
+        db.todoDao().insertItem(item)
         stubContainer.visibility = View.INVISIBLE
         recyclerView.visibility = View.VISIBLE
     }
