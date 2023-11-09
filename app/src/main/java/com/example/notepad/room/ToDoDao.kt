@@ -1,5 +1,6 @@
 package com.example.notepad.room
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.notepad.ToDoItem
 
@@ -7,7 +8,7 @@ import com.example.notepad.ToDoItem
     interface ToDoDao {
 
             @Query("SELECT * FROM toDoItem")
-            fun getAllItems(): List<ToDoItem>
+            fun getAllItems(): LiveData<List<ToDoItem>>
 
             @Insert
             fun insertItem(toDoItem: ToDoItem)

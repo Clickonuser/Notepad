@@ -26,8 +26,8 @@ class CustomAdapter(private var mList: MutableList<ToDoItem>): RecyclerView.Adap
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun insertItem(item: ToDoItem) {
-        mList.add(item)
+    fun updateList(updatedList: List<ToDoItem>) {
+        mList = updatedList.toMutableList()
         notifyDataSetChanged()
     }
 

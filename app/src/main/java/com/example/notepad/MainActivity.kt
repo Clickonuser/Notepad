@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
@@ -17,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: CustomAdapter
     private lateinit var db: AppDatabase
+    private lateinit var todoLiveData: LiveData<List<ToDoItem>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,17 +36,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.main_recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        val data = ArrayList<ToDoItem>()
-
-        if(data.isEmpty()) {
-            stubContainer.visibility = View.VISIBLE
-            recyclerView.visibility = View.INVISIBLE
-        } else {
-            stubContainer.visibility = View.INVISIBLE
-            recyclerView.visibility = View.VISIBLE
-        }
-
-        adapter = CustomAdapter(data)
+        adapter = CustomAdapter(mutableListOf())
         recyclerView.adapter = adapter
 
         db = Room.databaseBuilder(
@@ -53,6 +46,20 @@ class MainActivity : AppCompatActivity() {
         )
             .allowMainThreadQueries()
             .build()
+
+        todoLiveData = db.todoDao().getAllItems()
+        todoLiveData.observe(this, Observer {
+
+            adapter.updateList(it)
+
+            if(it.isEmpty()) {
+                stubContainer.visibility = View.VISIBLE
+                recyclerView.visibility = View.INVISIBLE
+            } else {
+                stubContainer.visibility = View.INVISIBLE
+                recyclerView.visibility = View.VISIBLE
+            }
+        })
 
     }
 
