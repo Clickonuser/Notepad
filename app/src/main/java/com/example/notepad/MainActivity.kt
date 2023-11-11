@@ -49,23 +49,23 @@ class MainActivity : AppCompatActivity() {
 
         todoLiveData = db.todoDao().getAllItems()
         todoLiveData.observe(this, Observer {
-
             adapter.updateList(it)
-
-            if(it.isEmpty()) {
-                stubContainer.visibility = View.VISIBLE
-                recyclerView.visibility = View.INVISIBLE
-            } else {
-                stubContainer.visibility = View.INVISIBLE
-                recyclerView.visibility = View.VISIBLE
-            }
+            screenDataValidation(it)
         })
 
     }
 
+    private fun screenDataValidation(list: List<ToDoItem>) {
+        if(list.isEmpty()) {
+            stubContainer.visibility = View.VISIBLE
+            recyclerView.visibility = View.INVISIBLE
+        } else {
+            stubContainer.visibility = View.INVISIBLE
+            recyclerView.visibility = View.VISIBLE
+        }
+    }
+
     fun insertItem(item: ToDoItem) {
         db.todoDao().insertItem(item)
-        stubContainer.visibility = View.INVISIBLE
-        recyclerView.visibility = View.VISIBLE
     }
 }
