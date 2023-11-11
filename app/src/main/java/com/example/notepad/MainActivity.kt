@@ -12,7 +12,7 @@ import androidx.room.Room
 import com.example.notepad.room.AppDatabase
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnItemClick {
 
     private lateinit var stubContainer: LinearLayout
     private lateinit var fab: FloatingActionButton
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.main_recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        adapter = CustomAdapter(mutableListOf())
+        adapter = CustomAdapter(mutableListOf(), this)
         recyclerView.adapter = adapter
 
         db = Room.databaseBuilder(
@@ -67,5 +67,10 @@ class MainActivity : AppCompatActivity() {
 
     fun insertItem(item: ToDoItem) {
         db.todoDao().insertItem(item)
+    }
+
+    override fun itemClicked(item: ToDoItem) {
+        val dialog = CustomDialog(this)
+        dialog.show()
     }
 }

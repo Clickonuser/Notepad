@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 
-class CustomAdapter(private var mList: MutableList<ToDoItem>): RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
+class CustomAdapter(private var mList: MutableList<ToDoItem>, private val click: OnItemClick): RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -17,8 +18,13 @@ class CustomAdapter(private var mList: MutableList<ToDoItem>): RecyclerView.Adap
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val el = mList[position]
+
         holder.title.text = el.title
         holder.description.text = el.description
+
+        holder.container.setOnClickListener {
+            click.itemClicked(el)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -34,5 +40,6 @@ class CustomAdapter(private var mList: MutableList<ToDoItem>): RecyclerView.Adap
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val title: TextView = itemView.findViewById(R.id.item_recycler_title)
         val description: TextView = itemView.findViewById(R.id.item_recycler_description)
+        val container: ConstraintLayout = itemView.findViewById(R.id.item_recycler_container)
     }
 }
