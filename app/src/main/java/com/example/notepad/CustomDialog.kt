@@ -7,13 +7,16 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 
-class CustomDialog(var activity: MainActivity) : Dialog(activity), View.OnClickListener {
+class CustomDialog(private var activity: MainActivity, private val isNewItem: Boolean, private val item: ToDoItem?) : Dialog(activity), View.OnClickListener {
 
     private lateinit var okButton: Button
     private lateinit var cancelButton: Button
     private lateinit var inputFieldTitle: EditText
     private lateinit var inputFieldDescription: EditText
+    private lateinit var dialogLabel: TextView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,11 +25,27 @@ class CustomDialog(var activity: MainActivity) : Dialog(activity), View.OnClickL
         initViews()
         dialogSizeControl()
 
+        if(isNewItem) {
+            createNewItem()
+        } else {
+            updateExistingItem()
+        }
+
+    }
+
+    private fun updateExistingItem() {
+        dialogLabel.text = context.getString(R.string.update_item)
+        inputFieldTitle.setText(item?.title)
+        inputFieldDescription.setText(item?.description)
+    }
+
+    private fun createNewItem() {
     }
 
     private fun initViews() {
         inputFieldTitle = findViewById(R.id.dialog_input_title)
         inputFieldDescription = findViewById(R.id.dialog_input_description)
+        dialogLabel = findViewById(R.id.dialog_label)
         okButton = findViewById(R.id.dialog_ok_button)
         cancelButton = findViewById(R.id.dialog_cancel_button)
         okButton.setOnClickListener(this)

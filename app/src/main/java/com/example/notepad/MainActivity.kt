@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity(), OnItemClick {
         fab = findViewById(R.id.main_fab)
 
         fab.setOnClickListener {
-            val dialog = CustomDialog(this)
+            val dialog = CustomDialog(this, true, null)
             dialog.show()
         }
 
@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity(), OnItemClick {
     }
 
     override fun itemClicked(item: ToDoItem) {
-        val dialog = CustomDialog(this)
+        val dialog = CustomDialog(this, false, item)
         dialog.show()
     }
 }
