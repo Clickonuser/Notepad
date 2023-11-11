@@ -69,6 +69,10 @@ class MainActivity : AppCompatActivity(), OnItemClick {
         db.todoDao().insertItem(item)
     }
 
+    fun updateItem(item: ToDoItem) {
+        db.todoDao().updateItem(item)
+    }
+
     override fun itemClicked(item: ToDoItem) {
         val dialog = CustomDialog(this, false, item)
         dialog.show()

@@ -72,13 +72,30 @@ class CustomDialog(private var activity: MainActivity, private val isNewItem: Bo
         }
     }
 
+    private fun elseBeenClicked() {}
+
     private fun okButtonClicker() {
+        if(isNewItem) {
+            okNewItemBeenClicked()
+        } else {
+            okUpdateItemBeenClicked()
+        }
+        dismiss()
+    }
+
+    private fun okNewItemBeenClicked() {
         val inputTitleResul = inputFieldTitle.text.toString()
         val inputDescriptionResult = inputFieldDescription.text.toString()
         activity.insertItem(ToDoItem(0, inputTitleResul, inputDescriptionResult))
         dismiss()
     }
 
-    private fun elseBeenClicked() {}
+    private fun okUpdateItemBeenClicked() {
+        val inputTitleResul = inputFieldTitle.text.toString()
+        val inputDescriptionResult = inputFieldDescription.text.toString()
+        // activity.updateItem(ToDoItem(item?.id!!, inputTitleResul, inputDescriptionResult))
+        item?.id?.let { ToDoItem(it, inputTitleResul, inputDescriptionResult) }
+            ?.let { activity.updateItem(it) } // здесь студия сама предложила так изменить строку выше
+    }
 
 }
