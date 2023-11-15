@@ -1,6 +1,8 @@
 package com.example.notepad
 
 import android.app.Dialog
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -40,6 +42,11 @@ class CustomDialog(private var activity: MainActivity, private val isNewItem: Bo
     }
 
     private fun createNewItem() {
+        val sharedPref = activity.getPreferences(Context.MODE_PRIVATE)
+        val titleFromPrefs = sharedPref.getString("titleKey", "")
+        val descriptionFromPrefs = sharedPref.getString("descriptionKey", "")
+        inputFieldTitle.setText(titleFromPrefs)
+        inputFieldDescription.setText(descriptionFromPrefs)
     }
 
     private fun initViews() {
@@ -87,6 +94,8 @@ class CustomDialog(private var activity: MainActivity, private val isNewItem: Bo
         val inputTitleResul = inputFieldTitle.text.toString()
         val inputDescriptionResult = inputFieldDescription.text.toString()
         activity.insertItem(ToDoItem(0, inputTitleResul, inputDescriptionResult))
+        inputFieldTitle.text.clear()
+        inputFieldDescription.text.clear()
         dismiss()
     }
 
@@ -96,6 +105,20 @@ class CustomDialog(private var activity: MainActivity, private val isNewItem: Bo
         // activity.updateItem(ToDoItem(item?.id!!, inputTitleResul, inputDescriptionResult))
         item?.id?.let { ToDoItem(it, inputTitleResul, inputDescriptionResult) }
             ?.let { activity.updateItem(it) } // здесь студия сама предложила так изменить строку выше
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if(isNewItem) {
+            val sharedPref: SharedPreferences = activity.getPreferences(Context.MODE_PRIVATE) ?: return
+            with (sharedPref.edit()) {
+                val inputTitleResult = inputFieldTitle.text.toString()
+                val inputDescriptionResult = inputFieldDescription.text.toString()
+                putString("titleKey", inputTitleResult)
+                putString("descriptionKey", inputDescriptionResult)
+                apply()
+            }
+        }
     }
 
 }
