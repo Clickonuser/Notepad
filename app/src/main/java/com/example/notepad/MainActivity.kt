@@ -6,26 +6,23 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
-import com.example.notepad.room.AppDatabase
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity(), OnItemClick {
 
+    private val mainViewModel: MainViewModel by viewModels()
+
     private lateinit var stubContainer: LinearLayout
     private lateinit var fab: FloatingActionButton
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: CustomAdapter
-    private lateinit var db: AppDatabase
-    private lateinit var todoLiveData: LiveData<List<ToDoItem>>
-
     private lateinit var dataCopy: List<ToDoItem>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,16 +43,8 @@ class MainActivity : AppCompatActivity(), OnItemClick {
         adapter = CustomAdapter(mutableListOf(), this)
         recyclerView.adapter = adapter
 
-        db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "database-name"
-        )
-            .allowMainThreadQueries()
-            .build()
-
-        todoLiveData = db.todoDao().getAllItems()
-        todoLiveData.observe(this, Observer {
+        mainViewModel.getAllItems()
+        mainViewModel.todoItemListResult.observe(this, Observer {
             dataCopy = it
             adapter.updateList(it)
             screenDataValidation(it)
@@ -105,7 +94,7 @@ class MainActivity : AppCompatActivity(), OnItemClick {
                 val position = viewHolder.adapterPosition // get element position
                 val deletedToDoItem: ToDoItem = dataCopy[position]
 
-                deleteItem(deletedToDoItem)
+                mainViewModel.deleteItem(deletedToDoItem)
                 // then the Observer will run and change the list in the adapter
 
                 // below line is to display our snack-bar with action.
@@ -114,7 +103,7 @@ class MainActivity : AppCompatActivity(), OnItemClick {
                         getString(R.string.undo),
                         View.OnClickListener {
 
-                            insertItem(deletedToDoItem)
+                            mainViewModel.insertItem(deletedToDoItem)
                             // then the Observer will run and change the list in the adapter
 
                         }).show()
@@ -134,15 +123,13 @@ class MainActivity : AppCompatActivity(), OnItemClick {
     }
 
     fun insertItem(item: ToDoItem) {
-        db.todoDao().insertItem(item)
+        mainViewModel.insertItem(item) // used CustomDialog
+        // TODO Add viewModel to CustomDialog and remove this code
     }
 
     fun updateItem(item: ToDoItem) {
-        db.todoDao().updateItem(item)
-    }
-
-    fun deleteItem(item: ToDoItem) {
-        db.todoDao().deleteItem(item)
+        mainViewModel.updateItem(item) // used CustomDialog
+        // TODO Add viewModel to CustomDialog and remove this code
     }
 
     override fun itemClicked(item: ToDoItem) {
