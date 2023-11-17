@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity(), OnItemClick {
         fab = findViewById(R.id.main_fab)
 
         fab.setOnClickListener {
-            val dialog = CustomDialog(this, true, null)
-            dialog.show()
+            val dialogFragment = CustomDialog(true, null)
+            dialogFragment.show(supportFragmentManager, "Custom dialog")
         }
 
         recyclerView = findViewById(R.id.main_recycler_view)
@@ -122,18 +122,8 @@ class MainActivity : AppCompatActivity(), OnItemClick {
         }
     }
 
-    fun insertItem(item: ToDoItem) {
-        mainViewModel.insertItem(item) // used CustomDialog
-        // TODO Add viewModel to CustomDialog and remove this code
-    }
-
-    fun updateItem(item: ToDoItem) {
-        mainViewModel.updateItem(item) // used CustomDialog
-        // TODO Add viewModel to CustomDialog and remove this code
-    }
-
     override fun itemClicked(item: ToDoItem) {
-        val dialog = CustomDialog(this, false, item)
-        dialog.show()
+        val dialogFragment = CustomDialog(false, item)
+        dialogFragment.show(supportFragmentManager, "Custom dialog")
     }
 }

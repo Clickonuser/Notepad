@@ -51,4 +51,7 @@ dependencies {
     // viewModels()
     implementation 'androidx.activity:activity-ktx:1.4.0'
 
+    // activityViewModels()
+    implementation("androidx.fragment:fragment-ktx:1.6.1")
+
 }
