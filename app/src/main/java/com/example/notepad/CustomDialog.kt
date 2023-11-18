@@ -1,20 +1,19 @@
 package com.example.notepad
 
 import android.app.ActionBar
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 
 class CustomDialog(private val isNewItem: Boolean, private val item: ToDoItem?) : DialogFragment(), View.OnClickListener {
 
     private val mainViewModel: MainViewModel by activityViewModels()
+    private val customDialogViewModel: CustomDialogViewModel by activityViewModels()
 
     private lateinit var okButton: Button
     private lateinit var cancelButton: Button
@@ -44,6 +43,12 @@ class CustomDialog(private val isNewItem: Boolean, private val item: ToDoItem?) 
     override fun onResume() {
         super.onResume()
         dialogSizeControl()
+
+        customDialogViewModel.dataFromPrefsResult.observe(this, Observer {
+            inputFieldTitle.setText(it.title)
+            inputFieldDescription.setText(it.description)
+        })
+
     }
 
     private fun updateExistingItem() {
@@ -53,11 +58,7 @@ class CustomDialog(private val isNewItem: Boolean, private val item: ToDoItem?) 
     }
 
     private fun createNewItem() {
-        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
-        val titleFromPrefs = sharedPref?.getString("titleKey", "")
-        val descriptionFromPrefs = sharedPref?.getString("descriptionKey", "")
-        inputFieldTitle.setText(titleFromPrefs)
-        inputFieldDescription.setText(descriptionFromPrefs)
+        customDialogViewModel.getTitleAndDescriptionFromPrefs("titleKey", "descriptionKey")
     }
 
     private fun initViews(view: View) {
@@ -120,14 +121,10 @@ class CustomDialog(private val isNewItem: Boolean, private val item: ToDoItem?) 
     override fun onStop() {
         super.onStop()
         if(isNewItem) {
-            val sharedPref: SharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-            with (sharedPref.edit()) {
-                val inputTitleResult = inputFieldTitle.text.toString()
-                val inputDescriptionResult = inputFieldDescription.text.toString()
-                putString("titleKey", inputTitleResult)
-                putString("descriptionKey", inputDescriptionResult)
-                apply()
-            }
+            val inputTitleResult = inputFieldTitle.text.toString()
+            val inputDescriptionResult = inputFieldDescription.text.toString()
+            customDialogViewModel.saveStringInPrefs("titleKey", inputTitleResult)
+            customDialogViewModel.saveStringInPrefs("descriptionKey", inputDescriptionResult)
         }
     }
 
