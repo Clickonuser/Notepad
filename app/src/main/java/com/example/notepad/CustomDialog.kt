@@ -45,8 +45,10 @@ class CustomDialog(private val isNewItem: Boolean, private val item: ToDoItem?) 
         dialogSizeControl()
 
         customDialogViewModel.dataFromPrefsResult.observe(this, Observer {
-            inputFieldTitle.setText(it.title)
-            inputFieldDescription.setText(it.description)
+            if(isNewItem) {
+                inputFieldTitle.setText(it.title)
+                inputFieldDescription.setText(it.description)
+            }
         })
 
     }
