@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,34 +30,29 @@ class MainActivity : AppCompatActivity(), OnItemClick {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        stubContainer = findViewById(R.id.main_no_items_container)
-        fab = findViewById(R.id.main_fab)
+        initViews()
+        swipeImplementation()
+        observers()
 
         fab.setOnClickListener {
             val dialogFragment = CustomDialog(true, null)
-            dialogFragment.show(supportFragmentManager, "Custom dialog")
+            dialogFragment.show(supportFragmentManager, getString(R.string.custom_dialog))
         }
 
-        recyclerView = findViewById(R.id.main_recycler_view)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
-        adapter = CustomAdapter(mutableListOf(), this)
-        recyclerView.adapter = adapter
-
         mainViewModel.getAllItems()
+    }
+
+    private fun observers() {
         mainViewModel.todoItemListResult.observe(this, Observer {
             dataCopy = it
             adapter.updateList(it)
             screenDataValidation(it)
         })
+    }
+
+    private fun swipeImplementation() {
 
         // Swiping
-        val deleteIcon = ContextCompat.getDrawable(this, R.drawable.baseline_delete_24)
-        val intrinsicWidth = deleteIcon?.intrinsicWidth
-        val intrinsicHeight = deleteIcon?.intrinsicHeight
-        val background = ColorDrawable()
-        val backgroundColor = getColor(R.color.red)
-
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(
                 recyclerView: RecyclerView,
@@ -72,26 +68,36 @@ class MainActivity : AppCompatActivity(), OnItemClick {
                 val itemView = viewHolder.itemView
                 val itemHeight = itemView.bottom - itemView.top
 
-                // Draw the red delete background
-                background.color = backgroundColor
-                background.setBounds(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
-                background.draw(canvas)
+                val deleteIcon = ContextCompat.getDrawable(this@MainActivity, R.drawable.baseline_delete_24)
 
-                // Calculate position of delete icon
-                val iconTop = itemView.top + (itemHeight - intrinsicHeight!!) / 2
-                val iconMargin = (itemHeight - intrinsicHeight) / 2
-                val iconLeft = itemView.right - iconMargin - intrinsicWidth!!
-                val iconRight = itemView.right - iconMargin
-                val iconBottom = iconTop + intrinsicHeight
+                deleteIcon?.let {
+                    // Params icon and background
+                    val intrinsicWidth = deleteIcon.intrinsicWidth
+                    val intrinsicHeight = deleteIcon.intrinsicHeight
+                    val background = ColorDrawable()
+                    val backgroundColor = getColor(R.color.red)
 
-                // Draw the delete icon
-                deleteIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
-                deleteIcon.draw(canvas)
+                    // Draw the red delete background
+                    background.color = backgroundColor
+                    background.setBounds(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
+                    background.draw(canvas)
+
+                    // Calculate position of delete icon
+                    val iconTop = itemView.top + (itemHeight - intrinsicHeight) / 2
+                    val iconMargin = (itemHeight - intrinsicHeight) / 2
+                    val iconLeft = itemView.right - iconMargin - intrinsicWidth
+                    val iconRight = itemView.right - iconMargin
+                    val iconBottom = iconTop + intrinsicHeight
+
+                    // Draw the delete icon
+                    deleteIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
+                    deleteIcon.draw(canvas)
+                }
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 // this method is called when we swipe our item to left direction.
-                val position = viewHolder.adapterPosition // get element position
+                val position = viewHolder.adapterPosition
                 val deletedToDoItem: ToDoItem = dataCopy[position]
 
                 mainViewModel.deleteItem(deletedToDoItem)
@@ -102,28 +108,38 @@ class MainActivity : AppCompatActivity(), OnItemClick {
                     .setAction(
                         getString(R.string.undo),
                         View.OnClickListener {
-
                             mainViewModel.insertItem(deletedToDoItem)
                             // then the Observer will run and change the list in the adapter
-
                         }).show()
             }
             // at last we are adding this to our recycler view.
         }).attachToRecyclerView(recyclerView)
     }
 
+    private fun initViews() {
+        stubContainer = findViewById(R.id.main_no_items_container)
+        fab = findViewById(R.id.main_fab)
+        recyclerView = findViewById(R.id.main_recycler_view)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = CustomAdapter(mutableListOf(), this)
+        recyclerView.adapter = adapter
+    }
+
     private fun screenDataValidation(list: List<ToDoItem>) {
         if(list.isEmpty()) {
-            stubContainer.visibility = View.VISIBLE
-            recyclerView.visibility = View.INVISIBLE
+            setupStub(showStub = true, showRecycler = false)
         } else {
-            stubContainer.visibility = View.INVISIBLE
-            recyclerView.visibility = View.VISIBLE
+            setupStub(showStub = false, showRecycler = true)
         }
+    }
+
+    private fun setupStub(showStub: Boolean, showRecycler: Boolean) {
+        stubContainer.isVisible = showStub
+        recyclerView.isVisible = showRecycler
     }
 
     override fun itemClicked(item: ToDoItem) {
         val dialogFragment = CustomDialog(false, item)
-        dialogFragment.show(supportFragmentManager, "Custom dialog")
+        dialogFragment.show(supportFragmentManager, getString(R.string.custom_dialog))
     }
 }

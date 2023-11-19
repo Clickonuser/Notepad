@@ -9,6 +9,8 @@ import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import com.example.notepad.Constants.PREFS_DESCRIPTION_KEY
+import com.example.notepad.Constants.PREFS_TITLE_KEY
 
 class CustomDialog(private val isNewItem: Boolean, private val item: ToDoItem?) : DialogFragment(), View.OnClickListener {
 
@@ -43,14 +45,16 @@ class CustomDialog(private val isNewItem: Boolean, private val item: ToDoItem?) 
     override fun onResume() {
         super.onResume()
         dialogSizeControl()
+        observers()
+    }
 
+    private fun observers() {
         customDialogViewModel.dataFromPrefsResult.observe(this, Observer {
             if(isNewItem) {
                 inputFieldTitle.setText(it.title)
                 inputFieldDescription.setText(it.description)
             }
         })
-
     }
 
     private fun updateExistingItem() {
@@ -60,7 +64,7 @@ class CustomDialog(private val isNewItem: Boolean, private val item: ToDoItem?) 
     }
 
     private fun createNewItem() {
-        customDialogViewModel.getTitleAndDescriptionFromPrefs("titleKey", "descriptionKey")
+        customDialogViewModel.getTitleAndDescriptionFromPrefs(PREFS_TITLE_KEY, PREFS_DESCRIPTION_KEY)
     }
 
     private fun initViews(view: View) {
@@ -77,11 +81,12 @@ class CustomDialog(private val isNewItem: Boolean, private val item: ToDoItem?) 
      * this need to control dialog size
      */
     private fun dialogSizeControl() {
-        // TODO Improve the code later
-        val params: ViewGroup.LayoutParams = dialog!!.window!!.attributes
-        params.width = ActionBar.LayoutParams.MATCH_PARENT
-        params.height = ActionBar.LayoutParams.WRAP_CONTENT
-        dialog!!.window!!.attributes = params as WindowManager.LayoutParams
+        dialog?.window?.apply {
+            val params = attributes
+            params.width = ActionBar.LayoutParams.MATCH_PARENT
+            params.height = ActionBar.LayoutParams.WRAP_CONTENT
+            attributes = params
+        }
     }
 
     override fun onClick(view: View) {
@@ -109,15 +114,15 @@ class CustomDialog(private val isNewItem: Boolean, private val item: ToDoItem?) 
         mainViewModel.insertItem(ToDoItem(0, inputTitleResul, inputDescriptionResult))
         inputFieldTitle.text.clear()
         inputFieldDescription.text.clear()
-        dismiss()
     }
 
     private fun okUpdateItemBeenClicked() {
         val inputTitleResul = inputFieldTitle.text.toString()
         val inputDescriptionResult = inputFieldDescription.text.toString()
-        // activity.updateItem(ToDoItem(item?.id!!, inputTitleResul, inputDescriptionResult))
-        item?.id?.let { ToDoItem(it, inputTitleResul, inputDescriptionResult) }
-            ?.let { mainViewModel.updateItem(it) } // здесь студия сама предложила так изменить строку выше
+        item?.id?.let {
+            val updatedItem = ToDoItem(it, inputTitleResul, inputDescriptionResult)
+            mainViewModel.updateItem(updatedItem)
+        }
     }
 
     override fun onStop() {
@@ -125,9 +130,8 @@ class CustomDialog(private val isNewItem: Boolean, private val item: ToDoItem?) 
         if(isNewItem) {
             val inputTitleResult = inputFieldTitle.text.toString()
             val inputDescriptionResult = inputFieldDescription.text.toString()
-            customDialogViewModel.saveStringInPrefs("titleKey", inputTitleResult)
-            customDialogViewModel.saveStringInPrefs("descriptionKey", inputDescriptionResult)
+            customDialogViewModel.saveStringInPrefs(PREFS_TITLE_KEY, inputTitleResult)
+            customDialogViewModel.saveStringInPrefs(PREFS_DESCRIPTION_KEY, inputDescriptionResult)
         }
     }
-
 }

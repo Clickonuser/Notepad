@@ -13,12 +13,20 @@ class CustomDialogViewModel(app: Application) : AndroidViewModel(app) {
     private val dataFromPrefs: MutableLiveData<ToDoItem> = MutableLiveData()
     val dataFromPrefsResult: LiveData<ToDoItem> = dataFromPrefs
 
+    /**
+     * Provides preferences values for TodoItem
+     */
     fun getTitleAndDescriptionFromPrefs(titleKey: String, descriptionKey: String) {
         val title = prefManager.getStringFromPrefs(titleKey)
         val description = prefManager.getStringFromPrefs(descriptionKey)
         dataFromPrefs.postValue(ToDoItem(0, title, description))
     }
 
+    /**
+     * Save data in shared preferences manager
+     * @param key - provide prefs information to save data
+     * @param value - provide data that need to be saved in prefs
+     */
     fun saveStringInPrefs(key: String, value: String) {
         prefManager.saveStringInPrefs(key, value)
     }

@@ -3,15 +3,19 @@ package com.example.notepad.data
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.Room
+import com.example.notepad.Constants.DATABASE_NAME
 import com.example.notepad.IRoomManager
 import com.example.notepad.ToDoItem
 import com.example.notepad.room.AppDatabase
 
+/**
+ * use to manage work with room data base
+ */
 class RoomManagerImpl(private val context: Context) : IRoomManager {
 
     private var db: AppDatabase = Room.databaseBuilder(
         context,
-        AppDatabase::class.java, "database-name"
+        AppDatabase::class.java, DATABASE_NAME
     )
         .allowMainThreadQueries()
         .fallbackToDestructiveMigration()
