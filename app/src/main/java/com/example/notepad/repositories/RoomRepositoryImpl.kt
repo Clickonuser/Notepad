@@ -1,17 +1,16 @@
-package com.example.notepad.data
+package com.example.notepad.repositories
 
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.example.notepad.Constants.DATABASE_NAME
-import com.example.notepad.IRoomManager
 import com.example.notepad.ToDoItem
 import com.example.notepad.room.AppDatabase
 
 /**
  * use to manage work with room data base
  */
-class RoomManagerImpl(private val context: Context) : IRoomManager {
+class RoomRepositoryImpl(private val context: Context) : RoomRepository {
 
     private var db: AppDatabase = Room.databaseBuilder(
         context,

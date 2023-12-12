@@ -1,8 +1,9 @@
-package com.example.notepad
+package com.example.notepad.repositories
 
 import androidx.lifecycle.LiveData
+import com.example.notepad.ToDoItem
 
-interface IRoomManager {
+interface RoomRepository {
 
     /**
      * Return data from data base

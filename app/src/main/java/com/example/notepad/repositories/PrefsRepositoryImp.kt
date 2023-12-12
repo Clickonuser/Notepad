@@ -1,16 +1,15 @@
-package com.example.notepad.data
+package com.example.notepad.repositories
 
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.notepad.Constants.BLANK_VALUE
 import com.example.notepad.Constants.PREFS_NAME
-import com.example.notepad.IPrefsManager
 
 /**
  * Manager that handles logic with shared preferences
  */
-class PrefsManagerImp(app: Application) : IPrefsManager {
+class PrefsRepositoryImp(app: Application) : PrefsRepository {
 
     private val sharedPref: SharedPreferences = app.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 

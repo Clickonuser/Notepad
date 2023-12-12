@@ -1,6 +1,6 @@
-package com.example.notepad
+package com.example.notepad.repositories
 
-interface IPrefsManager {
+interface PrefsRepository {
 
     /**
      * Return String from prefs
