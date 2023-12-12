@@ -1,7 +1,6 @@
 package com.example.notepad.repositories
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.example.notepad.Constants.DATABASE_NAME
 import com.example.notepad.ToDoItem
@@ -20,7 +19,7 @@ class RoomRepositoryImpl(private val context: Context) : RoomRepository {
         .fallbackToDestructiveMigration()
         .build()
 
-    override fun getAllItems(): LiveData<List<ToDoItem>> {
+    override fun getAllItems(): List<ToDoItem> {
         return db.todoDao().getAllItems()
     }
 

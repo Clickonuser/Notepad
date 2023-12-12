@@ -1,6 +1,5 @@
 package com.example.notepad.repositories
 
-import androidx.lifecycle.LiveData
 import com.example.notepad.ToDoItem
 
 interface RoomRepository {
@@ -8,7 +7,7 @@ interface RoomRepository {
     /**
      * Return data from data base
      */
-    fun getAllItems(): LiveData<List<ToDoItem>>
+    fun getAllItems(): List<ToDoItem>
 
     /**
      * Adding element to data base
