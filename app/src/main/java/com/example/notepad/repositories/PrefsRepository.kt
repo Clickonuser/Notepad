@@ -12,4 +12,14 @@ interface PrefsRepository {
      */
     fun saveStringInPrefs(key: String, value: String)
 
+    /**
+     * Return id from prefs
+     */
+    fun getIntFromPrefs(key: String) : Int
+
+    /**
+     * Saving id to prefs
+     */
+    fun saveIntInPrefs(key: String, value: Int)
+
 }

@@ -24,4 +24,15 @@ class PrefsRepositoryImp(app: Application) : PrefsRepository {
         }
     }
 
+    override fun getIntFromPrefs(key: String): Int {
+        return sharedPref.getInt(key, 1)
+    }
+
+    override fun saveIntInPrefs(key: String, value: Int) {
+        with (sharedPref.edit()) {
+            putInt(key, value)
+            apply()
+        }
+    }
+
 }

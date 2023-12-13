@@ -10,6 +10,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.example.notepad.Constants.PREFS_DESCRIPTION_KEY
+import com.example.notepad.Constants.PREFS_ID_KEY
 import com.example.notepad.Constants.PREFS_TITLE_KEY
 
 class CustomDialog(private val isNewItem: Boolean, private val item: ToDoItem?) : DialogFragment(), View.OnClickListener {
@@ -22,6 +23,8 @@ class CustomDialog(private val isNewItem: Boolean, private val item: ToDoItem?) 
     private lateinit var inputFieldTitle: EditText
     private lateinit var inputFieldDescription: EditText
     private lateinit var dialogLabel: TextView
+
+    private var id: Int = 1
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,6 +58,10 @@ class CustomDialog(private val isNewItem: Boolean, private val item: ToDoItem?) 
                 inputFieldDescription.setText(it.description)
             }
         })
+
+        customDialogViewModel.idFromPrefsResult.observe(this, Observer {
+            id = it
+        })
     }
 
     private fun updateExistingItem() {
@@ -65,6 +72,7 @@ class CustomDialog(private val isNewItem: Boolean, private val item: ToDoItem?) 
 
     private fun createNewItem() {
         customDialogViewModel.getTitleAndDescriptionFromPrefs(PREFS_TITLE_KEY, PREFS_DESCRIPTION_KEY)
+        customDialogViewModel.getIdFromPrefs(PREFS_ID_KEY)
     }
 
     private fun initViews(view: View) {
@@ -111,7 +119,8 @@ class CustomDialog(private val isNewItem: Boolean, private val item: ToDoItem?) 
     private fun okNewItemBeenClicked() {
         val inputTitleResul = inputFieldTitle.text.toString()
         val inputDescriptionResult = inputFieldDescription.text.toString()
-        mainViewModel.insertItem(ToDoItem(0, inputTitleResul, inputDescriptionResult))
+        mainViewModel.insertItem(ToDoItem(id, inputTitleResul, inputDescriptionResult))
+        customDialogViewModel.saveIntInPrefs(PREFS_ID_KEY, ++id)
         inputFieldTitle.text.clear()
         inputFieldDescription.text.clear()
     }
