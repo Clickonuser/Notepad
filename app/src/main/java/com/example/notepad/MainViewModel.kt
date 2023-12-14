@@ -1,15 +1,16 @@
 package com.example.notepad
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.example.notepad.repositories.RoomRepository
-import com.example.notepad.repositories.RoomRepositoryImpl
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class MainViewModel(app: Application) : AndroidViewModel(app) {
-
-    private val roomRepository: RoomRepository = RoomRepositoryImpl(app)
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val roomRepository: RoomRepository
+) : ViewModel() {
 
     private val todoItemList: MutableLiveData<List<ToDoItem>> = MutableLiveData()
     val todoItemListResult: LiveData<List<ToDoItem>> = todoItemList

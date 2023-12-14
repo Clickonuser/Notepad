@@ -1,15 +1,16 @@
 package com.example.notepad
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.example.notepad.repositories.PrefsRepository
-import com.example.notepad.repositories.PrefsRepositoryImp
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class CustomDialogViewModel(app: Application) : AndroidViewModel(app) {
-
-    private val prefsRepository: PrefsRepository = PrefsRepositoryImp(app)
+@HiltViewModel
+class CustomDialogViewModel @Inject constructor(
+    private val prefsRepository: PrefsRepository
+) : ViewModel() {
 
     private val dataFromPrefs: MutableLiveData<ToDoItem> = MutableLiveData()
     val dataFromPrefsResult: LiveData<ToDoItem> = dataFromPrefs

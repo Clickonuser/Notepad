@@ -12,7 +12,9 @@ import androidx.lifecycle.Observer
 import com.example.notepad.Constants.PREFS_DESCRIPTION_KEY
 import com.example.notepad.Constants.PREFS_ID_KEY
 import com.example.notepad.Constants.PREFS_TITLE_KEY
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CustomDialog(private val isNewItem: Boolean, private val item: ToDoItem?) : DialogFragment(), View.OnClickListener {
 
     private val mainViewModel: MainViewModel by activityViewModels()
