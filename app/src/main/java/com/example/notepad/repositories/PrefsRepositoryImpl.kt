@@ -1,7 +1,8 @@
 package com.example.notepad.repositories
 
 import android.content.SharedPreferences
-import com.example.notepad.Constants.BLANK_VALUE
+import com.example.notepad.Constants.BLANK_VALUE_INT
+import com.example.notepad.Constants.BLANK_VALUE_STRING
 import javax.inject.Inject
 
 /**
@@ -12,7 +13,7 @@ class PrefsRepositoryImpl @Inject constructor(
 ) : PrefsRepository {
 
     override fun getStringFromPrefs(key: String): String {
-        return sharedPref.getString(key, BLANK_VALUE) ?: BLANK_VALUE
+        return sharedPref.getString(key, BLANK_VALUE_STRING) ?: BLANK_VALUE_STRING
     }
 
     override fun saveStringInPrefs(key: String, value: String) {
@@ -23,7 +24,7 @@ class PrefsRepositoryImpl @Inject constructor(
     }
 
     override fun getIntFromPrefs(key: String): Int {
-        return sharedPref.getInt(key, 1)
+        return sharedPref.getInt(key, BLANK_VALUE_INT)
     }
 
     override fun saveIntInPrefs(key: String, value: Int) {

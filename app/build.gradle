@@ -59,4 +59,8 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
 
+    // Tests
+    testImplementation "org.mockito:mockito-core:5.3.1"
+    testImplementation "androidx.arch.core:core-testing:2.2.0" // rule
+
 }
