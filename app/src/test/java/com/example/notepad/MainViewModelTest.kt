@@ -114,7 +114,7 @@ class MainViewModelTest {
 
         val expectedResultAfterDelete = subject.todoItemListResult.value?.size
         assertEquals(1, expectedResultAfterDelete)
-        verify(roomRepository, times(1)).deleteItem(fakeItemOne)
+        verify(roomRepository, times(1)).deleteItem(fakeItemTwo)
     }
 
 }
